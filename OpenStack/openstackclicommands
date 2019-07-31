@@ -1,0 +1,24 @@
+  134  openstack compute agent list
+  138  openstack catalog list
+  139  openstack endpoint list
+  140  openstack host list
+  141  openstack hypervisor list
+  142  openstack image list
+  143  openstack server list
+  openstack server show d00e2767-4722-4c5e-b317-8ed7940a512b
+  openstack server delete d00e2767-4722-4c5e-b317-8ed7940a512b
+
+  for id in `grep xpc CH2Hspread01.txt | grep ch2h | grep red | egrep "api|core|cworker" | awk -F"," '{print $1}'`; do echo ---; echo $id; openstack server show $id | egrep "name|addresses" | grep -v name= | grep -v _name | grep -v hostname; done
+
+openstack security group rule create --ingress --ethertype IPv4 --remote-ip 10.0.0.0/8 --dst-port 1:65535 --protocol tcp xpc_default
+openstack security group rule create --ingress --ethertype IPv4 --remote-ip 96.118.0.0/20 --dst-port 1:65535 --protocol tcp xpc_default
+openstack security group rule create --egress --ethertype IPv4 --remote-ip 96.118.56.0/16 --dst-port 9997 --protocol tcp xpc_default
+
+  571  openstack user list
+  572  openstack server list
+  573  openstack security group list
+  574  openstack security group show xpc_default
+  575  openstack security group rule list xpc_default
+  576  openstack security group rule list xpc_default | awk -F'|' '{print $2}'
+  582  for rule in `cat zzzrulelist`; do echo ---------------; echo $rule; openstack security group rule show $rule; done
+

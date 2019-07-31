@@ -1,0 +1,19 @@
+--- # this is to do some stuff
+- hosts: localhost
+  remote_user: ansible
+  become: yes
+  become_method: sudo
+  connection: ssh
+  gather_facts: yes
+  tasks:
+    - name: InstallingMariaDB
+      yum:
+        name: mariadb-server
+        state: latest
+      notify:
+        - startservice
+  handlers:
+    - name: startservice
+      service:
+        name: mariadb
+        state: restarted

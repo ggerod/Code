@@ -1,0 +1,157 @@
+--- # this playbook is used to deploy certificate authentication on hosts
+- hosts: all
+  remote_user: ansible
+  become: yes
+  become_method: sudo
+  connection: ssh
+  vars:
+    site_color: "amber"  # <<< Get this from the hostname usually
+  tasks:
+    - name: Download the ca.pub file to the server
+      get_url:
+        url: http://source/path/ca.pub
+        dest: /etc/ssh/ca.pub
+        owner: root
+        group: root
+        mode: '0644'
+        checksum: md5:1ab60da4682b77b663baba38e21cd810
+
+    - name: Add TrustedUserCAKeys line to sshd_config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        line: 'TrustedUserCAKeys /etc/ssh/ca.pub'
+      notify: restart sshd
+
+    - name: Add AuthorizedPrincipalsFile line to sshd_config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        line: 'AuthorizedPrincipalsFile /etc/ssh/authorized_principals/%u'
+      notify: restart sshd
+
+    - name: Create authorzied_principals directory if it does not exist
+      file:
+        path: /etc/ssh/authorized_principals
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+      notify: restart sshd
+
+    - name: Create devops,sre,dev,qa principal files
+      copy:
+        dest: /etc/ssh/authorized_principals/{{ item }}
+        content: 'xdp.app.{{ item }}'
+        owner: root
+        group: root
+        mode: '0644'
+      with_items:
+        - devops
+        - sre
+        - dev
+        - qa
+      notify: restart sshd
+
+    - name: Create a devops,sre,dev,qa group
+      group:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - devops
+        - sre
+        - dev
+        - qa
+      notify: restart sshd
+
+    - name: Create devops,sre,dev,qa users
+      user:
+        name: "{{ item }}"
+        groups: "{{ item }}"
+        state: present
+        shell: /bin/bash
+        system: no
+        createhome: yes
+        home: /home/{{ item }}
+      with_items:
+        - devops
+        - sre
+        - dev
+        - qa
+      notify: restart sshd
+
+    - name: add devops sudoers green,yellow
+      copy:
+        dest: /etc/sudoers.d/devops
+        content: 'devops ALL=(ALL) NOPASSWD:ALL'
+        owner: root
+        group: root
+        mode: '0440'
+      when:
+        - site_color == "green" or site_color == "yellow"
+      notify: restart sshd
+
+    - name: add sre sudoers green,yellow
+      copy:
+        dest: /etc/sudoers.d/sre
+        content: |
+          sre ALL=NOPASSWD:/bin/systemctl restart sshd
+          sre ALL=NOPASSWD:/usr/bin/netstat
+          sre ALL=NOPASSWD:/usr/bin/yum
+        owner: root
+        group: root
+        mode: '0440'
+      when:
+        - site_color == "green" or site_color == "yellow"
+      notify: restart sshd
+
+    - name: add sudoers red,amber,orange,cicd
+      copy:
+        dest: /etc/sudoers.d/{{ item }}
+        content: '{{ item }} ALL=(ALL) NOPASSWD:ALL'
+        owner: root
+        group: root
+        mode: '0440'
+      with_items:
+        - devops
+        - sre
+        - dev
+        - qa
+      when:
+        - site_color == "red" or site_color == "amber" or site_color == "orange" or site_color == "cicd"
+      notify: restart sshd
+
+#    Later, when it looks good, we can change the path in /etc/ssh/sshd_config
+#    from: AuthorizedKeysFile .ssh/authorized_keys
+#      to: AuthorizedKeysFile /etc/ssh/authorized_keys/%u
+#    this will lock out anybody who doesn't have an authorized_keys file in the new location
+
+#    - name: change AuthorizedKeysFile line in /etc/ssh/sshd_config
+#      lineinfile:
+#        path: /etc/ssh/sshd_config
+#        state: present
+#        regexp: '^AuthorizedKeysFile'
+#        line: 'AuthorizedKeysFile /etc/ssh/authorized_keys/%u'
+#      notify: restart sshd
+#
+#    - name: Create authorzied_keys directory if it does not exist
+#      file:
+#        path: /etc/ssh/authorized_keys
+#        state: directory
+#        mode: '0755'
+#        owner: root
+#        group: root
+#      notify: restart sshd
+#
+#    - name: Copy ansible authorized_keys from /home/ansible/.ssh/ to /etc/ssh/authorized_keys/ansible
+#      copy:
+#        src: /home/ansible/.ssh/authorized_keys
+#        dest: /etc/ssh/authorized_keys/ansible
+#        remote_src: yes
+#      notify: restart sshd
+
+  handlers:
+    - name: restart sshd
+      service:
+        name: sshd
+        state: restarted

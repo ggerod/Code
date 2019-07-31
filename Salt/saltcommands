@@ -1,0 +1,17 @@
+salt '*' test.ping
+salt '*' test.echo 'Hello'
+salt '*' cmd.run "whoami"
+salt 'salt' cmd.run 'cat /etc/passwd'
+salt '*' user.add ggerod home=/home/ggerod
+salt 'salt' sys.list_modules
+salt 'salt' sys.list_functions user
+salt 'salt' sys.list_functions pkg
+salt 'salt' sys.doc user
+salt 'salt' sys.doc user.add
+
+salt-call --local cmd.run 'whoami'
+
+salt 'web1' sys.list_state_functions pkg
+salt 'web1' sys.state_doc pkg
+salt 'web1' sys.state_argspec pkg.installed
+
