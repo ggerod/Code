@@ -1,3 +1,6 @@
+#!/usr/bin/perl
+
+=for comment
 [ggerod@localhost PERL]$ ./sudoku.pl sudokuhard.txt 
 
 Input:
@@ -28,8 +31,12 @@ The solved array
 (8)(6)(3) (7)(4)(5) (2)(1)(9)
 [ggerod@localhost PERL]$ 
 
+  My code was rapidly hacked together,
+  so there are repeats that should be put into functions,
+  and it hasn't been optimized to eliminate unnecessary computations.
+  If I had more time, I would have written a shorter program.
 
-#!/usr/bin/perl
+=cut
 
 use strict;
 use warnings;
