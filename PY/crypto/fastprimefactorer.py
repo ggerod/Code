@@ -1,5 +1,4 @@
 #!/usr/local/bin/python3
-import subprocess
 import gmpy2
 from gmpy2 import mpz
 
