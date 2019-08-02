@@ -1,9 +1,10 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 import gmpy2
 from gmpy2 import mpz
 
 
-maxnum=int(input("Prime check maximum number:"))
+#maxnum=int(input("Prime check maximum number:"))
+maxnum=100000
 nums=[i for i in range(2,maxnum+1)]
 maxcheck = gmpy2.isqrt(maxnum)
 

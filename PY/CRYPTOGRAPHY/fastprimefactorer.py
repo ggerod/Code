@@ -2,7 +2,7 @@
 import gmpy2
 from gmpy2 import mpz
 
-import primelist1M
+import primelist2M  #Load the first 2M primes into memory
 numberinput = input("what number do you want to factor into primes? : ")
 numtofactor = mpz(numberinput)
 print()
@@ -12,7 +12,7 @@ print("[",end="")
 
 
 def findprimefactor(numtofactor):
-    for primenum in primelist1M.primelist:
+    for primenum in primelist2M.primelist:
         if (gmpy2.c_mod(numtofactor,primenum) == 0):
             return(primenum)
     return(0)
