@@ -33,6 +33,6 @@ while(True):
         print("rem="+str(numtofactor)+"]")
         exit(0)
 
-    print(str(primefactor)+",",end="")
+    print(str(primefactor)+",",flush=True,end="")
     numtofactor = gmpy2.c_div(numtofactor,primefactor)
     #print("new num to factor = ",numtofactor)
