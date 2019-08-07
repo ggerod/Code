@@ -13,7 +13,7 @@ print("[",end="")
 
 def findprimefactor(numtofactor):
     for primenum in primelist2M.primelist:
-        if (gmpy2.c_mod(numtofactor,primenum) == 0):
+        if (gmpy2.t_mod(numtofactor,primenum) == 0):
             return(primenum)
     return(0)
 
@@ -34,5 +34,5 @@ while(True):
         exit(0)
 
     print(str(primefactor)+",",flush=True,end="")
-    numtofactor = gmpy2.c_div(numtofactor,primefactor)
+    numtofactor = gmpy2.t_div(numtofactor,primefactor)
     #print("new num to factor = ",numtofactor)
