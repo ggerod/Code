@@ -1,0 +1,22 @@
+#!/usr/local/bin/pypy3
+import math
+
+# pi in hex >> 3.243F6 A8885 A308D 31319 8A2E0 37073 44A40 93822 299F3 1D008 2EFA9 8EC4E 6C894 52821 E638D 01377 BE546 6CF34 E90C6 CC0AC
+# Bailey–Borwein–Plouffe formula to compute ith hex digit of pi
+
+maxnum=10000000
+digitpos=3
+
+sum1a = 0
+sum1b = 0
+
+for k in range(digitpos+1):
+    sum1a += (((16 ** (digitpos-k))%(8*k +1)) / ((8*k + 1)))
+
+for k in range(digitpos+1,maxnum):
+    sum1b += ((16 ** (digitpos - k)) / (8*k +1))
+
+SUM1 = 4 * (sum1a + sum1b)
+SUM1 -=5
+SUM1 *=16
+print("SUM1 = ",SUM1)
