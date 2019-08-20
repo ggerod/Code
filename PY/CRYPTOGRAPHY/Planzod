@@ -1,0 +1,7 @@
+1. All the ways to get 24 digits [0-7] to sum to 19.  If we were lazy, we could just distribute the 19 spots in every permutation of the 24 buckets which 
+would be  24**19.    That would put all 19 in some buckets, etc.  This does not seem reasonable.   We limit the max addition to 7 in any given bucket.
+
+2. All the permutations of those digit sets that sum to 19 to add to the 24 buckets to make the final bucket sets.  Again, if we took the easy way out, this would be 24**19.  
+In our case, the keyspace is >>   
+
+3. All the ways to make the 63 ciphertext symbols map to the various bucket sets
