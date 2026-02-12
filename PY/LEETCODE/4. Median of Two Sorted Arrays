@@ -1,0 +1,13 @@
+class Solution:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+        flist = (nums1 + nums2)
+        flist.sort()
+        if (len(flist) % 2):
+            #odd length return middle number
+            return(flist[(len(flist) // 2)])
+        else:
+            #even length return mean of middle 2 nums
+            mid = int(len(flist) / 2)
+            v1 = flist[mid - 1]
+            v2 = flist[mid]
+            return((v1 + v2) / 2)
