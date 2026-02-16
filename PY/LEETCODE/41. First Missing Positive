@@ -1,0 +1,15 @@
+class Solution:
+    def firstMissingPositive(self, nums: List[int]) -> int:
+        nums = list(set(nums))
+        nums.sort()
+
+        # find the index of '1' or return '1'
+        if 1 in nums: stindex = nums.index(1)
+        else: return(1)
+
+        # starting from that index, see if next index is nums[i]+1
+        for i in range(stindex,len(nums) - 1):
+            if (nums[i + 1] != nums[i] + 1):
+                return(nums[i] + 1)
+
+        return(nums[-1] + 1)
