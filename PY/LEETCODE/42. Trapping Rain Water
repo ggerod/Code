@@ -1,0 +1,27 @@
+def rowcheck(indlist):
+    twater = 0
+    # from each local max check left and right to find an eqal max
+    # if found, find distance and add to total
+    if len(indlist) > 1:
+        for i in range(len(indlist) - 1):
+            twater += ((indlist[i+1] - indlist[i]) - 1)
+    return(twater)
+
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        totwater = 0
+        
+        while max(height) > 0:
+            #find indices of max height
+            lmax = max(height)
+            mindices = [i for i, x in enumerate(height) if x == lmax]
+
+            # get the water from the current max height
+            totwater += rowcheck(mindices)
+
+            # decrement all local maxes
+            for i in mindices:
+                height[i] -= 1
+
+        # all done
+        return(totwater)
