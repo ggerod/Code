@@ -1,0 +1,58 @@
+def rowcheck(indlist):
+    twater = 0
+    # from each local max check left and right to find an eqal max
+    # if found, find distance and add to total
+    if len(indlist) > 1:
+        for i in range(len(indlist) - 1):
+            twater += ((indlist[i+1] - indlist[i]) - 1)
+    return(twater)
+
+
+def cullleft(hlist):
+    lstop = 0
+    for i in range(len(hlist) - 1):
+        if (hlist[i+1] < hlist[i]):
+            lstop = i
+            break
+    if (lstop > 0): del hlist[0:lstop]
+
+
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        totwater = 0
+        if (len(set(height)) == 1): return(0)
+        if (height == sorted(height)): return(0)
+        if (height == sorted(height,reverse=True)): return(0)
+
+        # cull right
+        rstop = len(height) - 1
+        for i in range(rstop, 0, -1):
+            if (height[i - 1] < height[i]):
+                rstop = i
+                break
+        del height[rstop + 1:]
+
+        while len(height) > 2:
+            #  cull left
+            cullleft(height)
+
+            # find next index from 0 that is >= ind0 height
+            basright = 0
+            for i in range(len(height) - 1):
+                if (height[i+1] >= height[0]):
+                    basright = i + 1
+                    break
+            if (basright > 0):
+                # loop through those adding water up to wall
+                for i in range(1,basright):
+                    totwater += (height[0] - height[i])
+            else:
+                # if none found, find next max and reduce h[0] to h[2max]
+                secmax = max(height[1:])
+                height[0] = secmax
+
+            #  cull up to the wall index
+            del height[0:basright]
+
+        # all done
+        return(totwater)
