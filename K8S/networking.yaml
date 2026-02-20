@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-frontend
+  labels:
+    app.kubernetes.io/name: myapp-frontend
+spec:
+  nodeName: minikube
+  containers:
+  - name: myapp-frontend
+    image: nginx:stable
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-backend
+  labels:
+    app.kubernetes.io/name: myapp-backend
+spec:
+  nodeName: minikube-m02
+  containers:
+  - name: myapp-backend
+    image: nginx:stable
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: newapp
+  labels:
+    app.kubernetes.io/name: newapp
+spec:
+  nodeName: minikube-m03
+  containers:
+  - name: newapp
+    image: nginx:stable
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
