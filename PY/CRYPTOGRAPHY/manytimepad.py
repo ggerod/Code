@@ -75,5 +75,14 @@ def main():
     print("Recovered key = ",RECKEY)
     print()
 
+    print("the recovered messages are:")
+    for msg in MSGS[:-1]:
+        msgbin = bytes.fromhex(msg)
+        ptbin = xor(RECKEY,msgbin)
+        #print(ptbin)
+        print(ptbin.decode('utf-8', errors='ignore'))
+    print()
+    
+
 if __name__ == '__main__':
     main()
